@@ -1,5 +1,6 @@
 import os
 import sys
+import signal
 from custom_utils.custom_utils import CustomUtils
 from custom_utils.exceptions import *
 from custom_utils.sql import *
@@ -11,10 +12,13 @@ class QuestionableContent(CustomUtils):
         super().__init__()
         # Make sure base_dir exists and is created
         self._base_dir = base_dir
+
         # Set url_header
         self._url_header = self._set_url_header(url_header)
+
         # Setup database
         self._db_setup()
+
         # Start parsing the site
         self.start()
 
@@ -101,7 +105,13 @@ class QuestionableContent(CustomUtils):
         self._db_session = self.sql.get_session()
 
 
+def signal_handler(signal, frame):
+    print("")
+    sys.exit(0)
+
+
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, signal_handler)
     if len(sys.argv) < 2:
         print("You must pass in the save directory of the scraper")
     save_dir = CustomUtils().create_path(sys.argv[1], is_dir=True)
