@@ -11,10 +11,13 @@ class QuestionableContent(CustomUtils):
         super().__init__()
         # Make sure base_dir exists and is created
         self._base_dir = base_dir
+
         # Set url_header
         self._url_header = self._set_url_header(url_header)
+
         # Setup database
         self._db_setup()
+
         # Start parsing the site
         self.start()
 
@@ -53,6 +56,10 @@ class QuestionableContent(CustomUtils):
         :param id_: id of the comic on `http://questionablecontent.net/`
         :return:
         """
+        # There is no comic 0
+        if id_ == 0:
+            return
+
         prop = {}
         prop['id'] = str(id_)
         base_url = "http://questionablecontent.net"
