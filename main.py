@@ -43,9 +43,10 @@ class QuestionableContent(CustomUtils):
         # get the html from the url
         try:
             soup = self.get_site(url, self._url_header)
-        except RequestsError:
-            # TODO: Do something more useful here i.e. let the user know and do not just start at 0
-            return 0
+        except RequestsError as e:
+            print("Error getting latest: " + str(e))
+            sys.exit(0)
+
         max_id = int(soup.find("div", {"id": "archive"}).a['href'].split('=')[-1])
         self.cprint("##\tNewest upload: " + str(max_id) + "\n")
         return max_id
