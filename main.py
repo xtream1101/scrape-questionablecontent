@@ -61,6 +61,7 @@ class QuestionableContent(CustomUtils):
         :return: id of the newest item
         """
         self.cprint("##\tGetting newest upload id...\n")
+
         url = "http://questionablecontent.net/archive.php"
         # get the html from the url
         try:
@@ -81,7 +82,7 @@ class QuestionableContent(CustomUtils):
         """
         # There is no comic 0
         if id_ == 0:
-            return
+            return False
 
         prop = {}
         prop['id'] = str(id_)
@@ -91,9 +92,9 @@ class QuestionableContent(CustomUtils):
         # get the html from the url
         try:
             soup = self.get_site(url, self._url_header)
-        except RequestsError:
-            # TODO: do something ore useful here
-            return
+        except RequestsError as e:
+            print("Error getting (" + url + "): " + str(e))
+            return False
 
         src = soup.find("img", {"id": "strip"})['src']
         prop['img'] = base_url + src
@@ -153,20 +154,20 @@ if __name__ == "__main__":
         config = configparser.ConfigParser()
         config.read(args.config)
 
-    # Check config file first
-    if 'main' in config:
-        if 'save_dir' in config['main']:
-            save_dir = config['main']['save_dir']
-        if 'restart' in config['main']:
-            if config['main']['restart'].lower() == 'true':
-                restart = True
-            else:
-                restart = False
+        # Check config file first
+        if 'main' in config:
+            if 'save_dir' in config['main']:
+                save_dir = config['main']['save_dir']
+            if 'restart' in config['main']:
+                if config['main']['restart'].lower() == 'true':
+                    restart = True
+                else:
+                    restart = False
 
-    # Proxies can only be set via config file
-    if 'proxy' in config:
-        if 'http' in config['proxy']:
-            proxy_list = config['proxy']['http'].split('\n')
+        # Proxies can only be set via config file
+        if 'proxy' in config:
+            if 'http' in config['proxy']:
+                proxy_list = config['proxy']['http'].split('\n')
 
     # Command line args will overwrite config args
     if args.dir is not None:
