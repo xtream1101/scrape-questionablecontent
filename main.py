@@ -115,7 +115,7 @@ class QuestionableContent(CustomUtils):
     def _db_setup(self):
         # Version of this database
         db_version = 1
-        db_file = os.path.join(self._base_dir, "xkcd.sqlite")
+        db_file = os.path.join(self._base_dir, "questionable_content.sqlite")
         self.sql = Sql(db_file, db_version)
         is_same_version = self.sql.set_up_db()
         if not is_same_version:
